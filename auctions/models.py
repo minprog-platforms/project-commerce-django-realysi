@@ -24,3 +24,5 @@ class Listing(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+# moet nog een bod model maken
