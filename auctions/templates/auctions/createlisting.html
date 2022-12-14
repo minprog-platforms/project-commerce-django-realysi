@@ -2,29 +2,42 @@
 
 {% block body %}
     <h2>Create new listing</h2>
-
+    <br>
     <form action="{% url 'createlisting' %}" method="POST">
-
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" name="title" class="form-control" id="title" placeholder="Enter title">
         </div>
+        <br>
         <div class="form-group">
             <label for="desciption">Discription</label>
             <input type="text" name="desciption" class="form-control" id="desciption" placeholder="Enter desciption">
         </div>
+        <br>
         <div class="form-group">
             <label for="nation">Nation</label>
             <input type="text" name="Nation" class="form-control" id="Nation" placeholder="Enter Nation">
         </div>
+        <br>
         <div class="form-group">
             <label for="url_image">Image Url</label>
             <input type="text" name="url_image" class="form-control" id="url_image" placeholder="Enter Image Url">
         </div>
+        <br>
         <div class="form-group">
             <label for="price">Price</label>
             <input type="number" name="price" class="form-control" id="price" placeholder="Enter Price">
         </div>
+        <br>
+        <div class="form-group">
+            <label for="category">Choose a category:</label>
+            <select name="category" id="category">
+            <option value="Navy">Navy</option>
+            <option value="Infantry">Infantry</option>
+            <option value="Airforce">Airforce</option>
+            </select>
+        </div>
+        <br>
         <button type="submit" class="btn btn-primary">Create new listing</button>
     </form>
 {% endblock %}
