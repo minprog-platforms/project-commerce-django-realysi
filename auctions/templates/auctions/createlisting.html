@@ -32,9 +32,9 @@
         <div class="form-group">
             <label for="category">Choose a category:</label>
             <select name="category" id="category">
-            <option value="Navy">Navy</option>
-            <option value="Infantry">Infantry</option>
-            <option value="Airforce">Airforce</option>
+            {% for i in categories %}
+                <option value="" >{{ i }}</option>
+            {% endfor %}
             </select>
         </div>
         <br>

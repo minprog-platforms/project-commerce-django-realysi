@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from .models import User, Category, Listing
 
 from .models import User
 
@@ -12,7 +13,8 @@ def index(request):
 
 def createlisting(request):
     if request.method == "GET":
-        return render(request, "auctions/createlisting.html" )
+        categories = Category.objects.all()
+        return render(request, "auctions/createlisting.html", {"categories": categories} )
 
 
 def login_view(request):
