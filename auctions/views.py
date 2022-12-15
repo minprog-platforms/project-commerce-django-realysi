@@ -10,7 +10,14 @@ from .models import User
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    active = Listing.objects.filter(active=True)
+    categories = Category.objects.all()
+    return render(request, "auctions/index.html", {
+        "listings": active,
+        "categories": categories
+
+    })
+
 
 def createlisting(request):
     if request.method == "GET":
@@ -44,6 +51,17 @@ def createlisting(request):
         return HttpResponseRedirect(reverse(index))
 
 
+def displayCategory(request):
+    if request.method == "POST":
+        categoryA = request.POST["category"]
+        category = Category.objects.get(name_category=categoryA)
+        active = Listing.objects.filter(active=True, category=category)
+        categories = Category.objects.all()
+        return render(request, "auctions/index.html", {
+            "listings": active,
+            "categories": categories
+
+        })
 
 def login_view(request):
     if request.method == "POST":
