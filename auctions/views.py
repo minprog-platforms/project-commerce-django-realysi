@@ -60,6 +60,7 @@ def add_bid(request, id):
     data_listing = Listing.objects.get(pk=id)
     listing_in_watchlist = request.user in data_listing.watchlist.all()
     comments = Comment.objects.filter(listing=data_listing)
+    owner = request.user.username == data_listing.beheerder.username
     if int(new_bid) > data_listing.price.bid:
         bid = Bid(user=user, bid=int(new_bid))
         bid.save()
@@ -71,6 +72,7 @@ def add_bid(request, id):
             "info": "bid is placed",
             "listing_in_watchlist": listing_in_watchlist,
             "comments": comments,
+            "owner": owner,
         })
     else:
         return render(request, "auctions/listing.html", {
@@ -79,6 +81,7 @@ def add_bid(request, id):
             "info": "bid is to low or something went wrong",
             "listing_in_watchlist": listing_in_watchlist,
             "comments": comments,
+            "owner": owner,
         })
         
 
@@ -111,13 +114,29 @@ def listing(request, id):
     listing_data = Listing.objects.get(pk=id)
     listing_in_watchlist = request.user in listing_data.watchlist.all()
     comments = Comment.objects.filter(listing=listing_data)
+    owner = request.user.username == listing_data.beheerder.username
     return render(request, "auctions/listing.html", {
         "listing": listing_data,
         "listing_in_watchlist": listing_in_watchlist,
         "comments": comments,
+        "owner": owner,
     })
 
-
+def close(request, id):
+    data_listing = Listing.objects.get(pk=id)
+    data_listing.active = False
+    data_listing.save()
+    comments = Comment.objects.filter(listing=data_listing)
+    listing_in_watchlist = request.user in data_listing.watchlist.all()
+    owner = request.user.username == data_listing.beheerder.username
+    return render(request, "auctions/listing.html", {
+        "listing": data_listing,
+        "listing_in_watchlist": listing_in_watchlist,
+        "comments": comments,
+        "owner": owner,
+        "update": True,
+        "info": "Auction closed",
+    })
 def login_view(request):
     if request.method == "POST":
 

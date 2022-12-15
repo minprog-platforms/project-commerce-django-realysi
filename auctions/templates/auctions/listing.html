@@ -13,8 +13,21 @@
         {% endif %}
     </div>
 
+    {% if not listing.active and user == listing.price.user %}
+        <div class="alert alert-success" role="alert">
+            You won this auction!
+        </div>
+    {% endif %}
+
     <div class="row">
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and listing.active %}
+            {% if owner %}
+                <form action="{% url 'close' id=listing.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-dark">Close auction</button>
+                </form>
+            {% endif %}
+        
             {% if listing_in_watchlist %}
                 <form action="{% url 'remove_watchlist' id=listing.id %}" method="POST">
                     {% csrf_token %}
@@ -36,18 +49,20 @@
     <p>{{listing.description}}</p>
     <h4>Country of origin: {{listing.nation}}</h4>
     <br>
-    <h5>Owner: {{listing.beheerder}}</h5>
+    <h5>Provider: {{listing.beheerder}}</h5>
     <br>
     <h6>Price: ${{listing.price.bid}}</h6>
     <br>
-    <form action="{% url 'add_bid' id=listing.id %}" method="POST">
-        {%csrf_token%}
-        <input type="number" name="new_bid" placeholder="Place bid here" style="border-color: rosybrown;width: auto; margin-left: 0px;" min="0">
-        <div class="form-group">
-            <br>
-            <button type="submit" class="btn btn-primary">Add to bids</button>
-        </div>
-    </form>
+    {% if listing.active %}
+        <form action="{% url 'add_bid' id=listing.id %}" method="POST">
+            {%csrf_token%}
+            <input type="number" name="new_bid" placeholder="Place bid here" style="border-color: rosybrown;width: auto; margin-left: 0px;" min="0">
+            <div class="form-group">
+                <br>
+                <button type="submit" class="btn btn-primary">Add to bids</button>
+            </div>
+        </form>
+    {% endif %}
     <br>
 
     <h5>Comments</h5>
