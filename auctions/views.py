@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import User, Category, Listing
+from .models import User, Category, Listing, Comment
 from django import forms
 
 from .models import User
@@ -63,10 +63,27 @@ def displayCategory(request):
 
         })
 
+def remove_wachtlist(request, id):
+    data_listing = Listing.objects.get(pk=id)
+    user = request.user
+    data_listing.watchlist.remove(user)
+    return HttpResponseRedirect(reverse("listing", args=(id, )))
+
+
+def add_wachtlist(request, id):
+    data_listing = Listing.objects.get(pk=id)
+    user = request.user
+    data_listing.watchlist.add(user)
+    return HttpResponseRedirect(reverse("listing", args=(id, )))
+
 def listing(request, id):
     listing_data = Listing.objects.get(pk=id)
+    listing_in_watchlist = request.user in listing_data.watchlist.all()
+    comments = Comment.objects.filter(listing=listing_data)
     return render(request, "auctions/listing.html", {
-        "listing": listing_data
+        "listing": listing_data,
+        "listing_in_watchlist": listing_in_watchlist,
+        "comments": comments,
     })
 
 
@@ -88,6 +105,22 @@ def login_view(request):
             })
     else:
         return render(request, "auctions/login.html")
+
+def display_watchlist(request):
+    user = request.user
+    listing = user.watchlist.all()
+    return render(request, "auctions/watchlist.html", {
+        "listings": listing,
+    })
+
+def add_comment(request, id):
+    user = request.user
+    data_listing = Listing.objects.get(pk=id)
+    comment = request.POST["new_comment"]
+    addComment = Comment(commenter=user, listing=data_listing, message=comment)
+    addComment.save()
+    return HttpResponseRedirect(reverse("listing", args=(id, )))
+
 
 
 def logout_view(request):

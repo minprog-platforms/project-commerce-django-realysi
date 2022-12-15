@@ -21,8 +21,16 @@ class Listing(models.Model):
     active = models.BooleanField(default=True)
     beheerder = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="user")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="category")
+    watchlist = models.ManyToManyField(User, blank=True, null=True, related_name="watchlist")
 
     def __str__(self) -> str:
         return self.title
 
-# moet nog een bod model maken
+# moet nog een bod model maken en ook comment dnek ik
+class Comment(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, blank=True, null=True, related_name="listingComment")
+    commenter = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="userComment")
+    message = models.CharField(max_length=420)
+
+    def __str__(self) -> str:
+        return f"{self.commenter} on {self.listing}"
