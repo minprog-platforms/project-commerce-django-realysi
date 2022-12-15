@@ -8,7 +8,9 @@ from django import forms
 
 from .models import User
 
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def index(request):
     active = Listing.objects.filter(active=True)
     categories = Category.objects.all()
