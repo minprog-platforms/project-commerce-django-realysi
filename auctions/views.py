@@ -63,6 +63,13 @@ def displayCategory(request):
 
         })
 
+def listing(request, id):
+    listing_data = Listing.objects.get(pk=id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing_data
+    })
+
+
 def login_view(request):
     if request.method == "POST":
 
