@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import User, Category, Listing, Comment
+from .models import User, Category, Listing, Comment, Bid
 from django import forms
 
 from .models import User
@@ -35,13 +35,16 @@ def createlisting(request):
         user = request.user
         #catyegorydata
         categoryData = Category.objects.get(name_category = category)
+        #bid
+        bid = Bid(bid=float(price), user=user,)
+        bid.save()
         #listing
         new_listing = Listing(
             title=title,
             description=description,
             nation=nation,
             url_image=url_image,
-            price=float(price),
+            price=bid,
             category=categoryData,
             beheerder=user
         )
@@ -50,6 +53,34 @@ def createlisting(request):
         #to index.html
         return HttpResponseRedirect(reverse(index))
 
+
+def add_bid(request, id):
+    user = request.user
+    new_bid = request.POST["new_bid"]
+    data_listing = Listing.objects.get(pk=id)
+    listing_in_watchlist = request.user in data_listing.watchlist.all()
+    comments = Comment.objects.filter(listing=data_listing)
+    if int(new_bid) > data_listing.price.bid:
+        bid = Bid(user=user, bid=int(new_bid))
+        bid.save()
+        data_listing.price = bid
+        data_listing.save()
+        return render(request, "auctions/listing.html", {
+            "update": True,
+            "listing": data_listing,
+            "info": "bid is placed",
+            "listing_in_watchlist": listing_in_watchlist,
+            "comments": comments,
+        })
+    else:
+        return render(request, "auctions/listing.html", {
+            "update": False,
+            "listing": data_listing,
+            "info": "bid is to low or something went wrong",
+            "listing_in_watchlist": listing_in_watchlist,
+            "comments": comments,
+        })
+        
 
 def displayCategory(request):
     if request.method == "POST":

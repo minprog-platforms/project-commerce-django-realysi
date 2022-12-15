@@ -18,7 +18,7 @@
             <h5 class="card-title">{{ listing.title }}</h5>
             <p class="card-text">{{ listing.description }}</p>
             <p>Nation: {{listing.nation}}</p>
-            <p>Price: ${{listing.price}} </p>
+            <p>Initial Price: ${{listing.price}}</p>
             <a href="{% url 'listing' id=listing.id %}" class="btn btn-primary">Go to page</a>
             </div>
         </div>

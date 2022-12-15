@@ -11,13 +11,20 @@ class Category(models.Model):
     def __str__(self):
         return self.name_category
 
+# moet nog een bod model maken en ook comment dnek ik
+class Bid(models.Model):
+    bid = models.FloatField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="userbid")
+
+    def __str__(self) -> str:
+        return f"{self.bid}"
 
 class Listing(models.Model):
     title = models.CharField(max_length = 69)
     description = models.CharField(max_length = 420)
     nation = models.CharField(max_length=100)
     url_image = models.CharField(max_length=4200)
-    price = models.FloatField()
+    price = models.ForeignKey(Bid, on_delete=models.CASCADE, blank=True, null=True, related_name="bidPrice")
     active = models.BooleanField(default=True)
     beheerder = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="user")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="category")
@@ -26,7 +33,6 @@ class Listing(models.Model):
     def __str__(self) -> str:
         return self.title
 
-# moet nog een bod model maken en ook comment dnek ik
 class Comment(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, blank=True, null=True, related_name="listingComment")
     commenter = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="userComment")
